@@ -1,0 +1,137 @@
+* {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 14px;
+	background: #107abb;
+}
+
+.colums-container {
+    display: flex;
+	align-items: flex-start;
+    justify-content: center;
+}
+
+.card-list {
+	display: inline-block;
+	max-width: 280px;
+	min-width: 280px;
+	margin-right: 8px;
+    background-color: #DEE2E5;
+    padding: .5rem;
+    font-size: .9rem;
+    border-radius: .25rem;
+}
+
+.column-title {
+	text-transform: uppercase;
+	color: #385261;
+	font-weight: 700;
+}
+
+.anotner-card {
+  display: none;
+	color: #92a1a9;
+	font-weight: 700;
+	cursor: pointer;
+}
+
+.active__form {
+  display: block;
+}
+
+.push-container {
+	display: inline-block;
+	max-width: 100%;
+	min-width: 100%;
+    background-color: #fff;
+	margin-top: .3rem;
+	margin-bottom: .3rem;
+    padding: .35rem;
+    font-size: .9rem;
+    border-radius: .25rem;	
+	border: none;
+	box-shadow: 0px 1px 0px 0px rgba(0, 0, 0, 0.2)
+}
+
+.new-push-message {
+	display: inline-block;
+	max-width: 100%;
+	min-width: 100%;
+    background-color: #fff;
+	margin-top: .3rem;
+	margin-bottom: .3rem;
+    padding: .35rem;
+    font-size: .9rem;
+    border-radius: .25rem;	
+	border: none;
+	box-shadow: 0px 1px 0px 0px rgba(0, 0, 0, 0.2)
+}
+
+.push-container:focus {
+	outline: none;
+	border: none;
+	
+}
+
+.close-push-btn {
+	position: relative;
+	right: 60%;
+	display: inline-block;
+    color: #798c97;
+    float: right;
+    font-size: 28px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.close-push-msg {
+	box-sizing: border-box;
+	position: relative;
+	right: 2%;
+	display: inline-block;
+    color: #798c97;
+    float: right;
+    font-size: 18px;
+	max-height: 14px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.close-push-btn:hover, .close-push-msg:hover {
+    color: black;
+}
+
+.btn-card {
+	display: box;
+	cursor: pointer;
+	justify-content: center;
+	align-items: center;
+	width: 80px;
+	height: 30px;
+	background: #5ca84d;
+	font-weight: 600;
+	color: white;
+	border-radius: .25rem;
+	box-shadow: 0px 1px 0px 0px rgba(0, 0, 0, .2)
+}
+
+
+h4, h5 {
+	margin: 0;
+}
+
+h5 {
+	padding-top: 5px;
+	padding-bottom: 0;
+}
+
+h4 {
+	padding-bottom: 5px;
+	padding-top: 5px;
+}
+
