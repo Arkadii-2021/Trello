@@ -1,97 +1,172 @@
-const newCard = document.querySelectorAll('.anotner-card');
+const todoCard = document.querySelector('h5[id="1"]');
+const progressCard = document.querySelector('h5[id="2"]');
+const doneCard = document.querySelector('h5[id="3"]');
+
+!function() {
+  const trello = JSON.parse(localStorage.getItem ("trello"));
+
+  if (trello) {
+    for (const todoEl of [...trello.todo]) {
+      const el = new DOMParser().parseFromString(todoEl['elCard'], "text/html");
+      todoCard.previousSibling.after(el.all[3]);
+    }
+    for (const progressEl of [...trello.progress]) {
+      const el = new DOMParser().parseFromString(progressEl['elCard'], "text/html");
+      progressCard.previousSibling.after(el.all[3]);   
+    }
+    for (const doneEl of [...trello.done]) {
+      const el = new DOMParser().parseFromString(doneEl['elCard'], "text/html");
+      doneCard.previousSibling.after(el.all[3]);  
+    }
+
+    document.querySelectorAll('.close-push-msg').forEach((elem) => {
+      elem.remove();
+    })
+}
+  saveCards();
+}();
+
 
 function insertCardEl() {
-  [...newCard].forEach((card, index) => {
-    card.addEventListener('click', () => {
-      setTimeout(() => {
-        if (document.querySelectorAll('.btn-card').length < 1) {
-          closeAddPushCard(card, index);
-        }
-      }, 300);
-    });
+  todoCard.addEventListener('click', (e) => {
+    anotherCardEl(e);
   });
+  
+  progressCard.addEventListener('click', (e) => {
+    anotherCardEl(e);
+  });  
+  
+  doneCard.addEventListener('click', (e) => {
+    anotherCardEl(e);
+  }); 
 }
 
-function closeAddPushCard(evt, index) {
-  formToPush(evt);
-  setTimeout(() => closeFormAddCard(evt), 300);
-  document.querySelector('.btn-card').addEventListener('click', () => {
-    const cardEl = document.createElement('DIV');
-    cardEl.classList.add('new-push-message');
-    if (!(/^\s+$/.test(document.querySelector('textarea.push-container').value))
-       && document.querySelector('textarea.push-container').value !== '') {
-      cardEl.textContent = document.querySelector('textarea.push-container').value;
-      setTimeout(() => {
-        document.querySelectorAll('.column-title')[index].nextSibling.after(cardEl);
-      }, 200);
-      document.querySelector('textarea.push-container').value = '';
-      addCrossMouseOverPushMsg(evt, index);
-    }
-  });
-}
-
-function formToPush(evt) {
+function anotherCardEl(e) {
   const textPush = document.createElement('textarea');
   textPush.classList.add('push-container');
+  textPush.style = 'display: inline-block;';
   textPush.setAttribute('placeholder', 'Enter a title for this card...');
-  setTimeout(() => document.querySelector('.btn-card').previousSibling.after(textPush), 100);
-  setTimeout(() => evt.style.display = 'none', 100);
-  addNewTask(evt);
-}
-
-function closeFormAddCard(evt) {
-  document.querySelector('.close-push-btn').addEventListener('click', () => {
-    document.querySelector('.btn-card').remove();
-    document.querySelector('.close-push-btn').remove();
-    document.querySelector('textarea.push-container').remove();
-    evt.style.display = 'inline-block';
-  }, { once: true });
-}
-
-function addCrossMouseOverPushMsg(evt, index) {
-  setTimeout(() => {
-    document.querySelector('.new-push-message').addEventListener('mouseover', (e) => {
-      crossMouseOver(e.target, index);
-    });
-    document.querySelector('.new-push-message').addEventListener('mouseout', () => {
-      if (document.querySelector('.close-push-msg')) {
-        document.querySelector('.close-push-msg').remove();
-      }
-    });
-  }, 250);
-}
-
-function crossMouseOver(evt) {
-  const closeEl = document.createElement('div');
-  closeEl.classList.add('close-push-msg');
-  closeEl.innerHTML = '&times;';
-  const todoMsg = document.getElementById('todo').children;
-  const progressMsg = document.getElementById('progress').children;
-  const done = document.getElementById('done').children;
-
-  if (evt.parentElement.getAttribute('id') === 'todo') {
-    todoMsg[[...todoMsg].indexOf(evt)].append(closeEl);
-  } else if (evt.parentElement.getAttribute('id') === 'progress') {
-    progressMsg[[...progressMsg].indexOf(evt)].append(closeEl);
-  } else if (evt.parentElement.getAttribute('id') === 'done') {
-    done[[...done].indexOf(evt)].append(closeEl);
-  }
-}
-
-function addNewTask(evt) {
+        
   const btnAddTask = document.createElement('div');
   btnAddTask.classList.add('btn-card');
   btnAddTask.textContent = 'Add card';
-  btnAddTask.style = 'text-align: center; padding-top: 7px;';
-  evt.previousSibling.after(btnAddTask);
-  closeBtnTask(evt);
+  btnAddTask.style = 'display: inline-block; text-align: center; padding-top: 9px;';
+       
+  const btnClose = document.createElement('div');
+  btnClose.classList.add('close-push-btn');
+  btnClose.style = 'display: inline-block;';
+  btnClose.innerHTML = '&times;';
+
+  e.target.before(textPush, btnAddTask, btnClose);
+  e.target.classList.toggle('active__form');
+
+  btnClose.addEventListener('click', () => {
+    textPush.remove();
+    btnAddTask.remove();
+    btnClose.remove();
+    e.target.classList.toggle('active__form');
+  })        
+
+  btnAddTask.addEventListener('click', (ev) => {
+    addTaskEl(e, ev, textPush, btnAddTask, btnClose);
+    saveCards();
+  });
 }
 
-function closeBtnTask() {
-  const closeBtn = document.createElement('div');
-  closeBtn.classList.add('close-push-btn');
-  closeBtn.innerHTML = '&times;';
-  setTimeout(() => document.querySelector('.btn-card').previousSibling.after(closeBtn), 100);
+function addTaskEl(e, ev, textPush, btnAddTask, btnClose) {
+  const getRandom = (min, max) => Math.floor(Math.random() * (max - min)) + min;
+  const cardEl = document.createElement('DIV');
+  
+  cardEl.classList.add('new-push-message');
+  cardEl.setAttribute('draggable', 'true');
+  cardEl.setAttribute('idMessage', getRandom(1, 999999));
+  
+  if (!(/^\s+$/.test(ev.target.previousSibling.value))
+  && ev.target.previousSibling.value !== '') {
+    cardEl.textContent = ev.target.previousSibling.value;
+    ev.target.parentElement.firstChild.nextSibling.after(cardEl);
+    console.log(ev.target.parentElement.firstChild.nextSibling.after)
+    ev.target.previousSibling.value = '';
+    textPush.remove();
+    btnAddTask.remove();
+    btnClose.remove();
+    e.target.classList.toggle('active__form');
+  }
+  
+  cardEl.addEventListener('mouseenter', () => {
+    crossMouseOver(e, cardEl);
+  })
+  
+  cardEl.addEventListener('dragstart', dragStart);
+
+  document.querySelectorAll('section').forEach((cardList) => {
+    cardList.addEventListener('dragenter', dragEnter);
+    cardList.addEventListener('dragover', dragOver);
+    cardList.addEventListener('drop', drop);
+  });
 }
 
+function dragStart(e) {
+  e.dataTransfer.setData('dragItem', this.getAttribute('idMessage'));
+}
+
+function dragEnter(e) {
+  e.preventDefault();
+}
+
+function dragOver(e) {
+  e.preventDefault();
+}
+
+function drop(e) {
+  const messDataAttr = e.dataTransfer.getData('dragItem');
+  const messDragEl = document.querySelector(`[idMessage='${messDataAttr}']`);
+  this.firstChild.nextSibling.after(messDragEl);
+  console.log(this.firstChild.nextSibling);
+  saveCards();
+}
+
+function crossMouseOver(e, cardEl) {
+  const closeEl = document.createElement('div');
+  closeEl.classList.add('close-push-msg');
+  closeEl.innerHTML = '&times;';
+  cardEl.append(closeEl);
+  cardEl.addEventListener('mouseleave', () => {
+    closeEl.remove();
+  })  
+  closeEl.addEventListener('click', () => {
+    cardEl.remove();
+    saveCards();
+  })
+}
+
+function runEventsMess() {
+  const cardElements = document.querySelectorAll('.new-push-message');
+  
+  cardElements.forEach((cardEl) => {
+    cardEl.addEventListener('mouseenter', (e) => {
+      crossMouseOver(e, cardEl);
+    });
+    cardEl.addEventListener('dragstart', dragStart);
+  })
+
+  document.querySelectorAll('section').forEach((cardList) => {
+    cardList.addEventListener('dragenter', dragEnter);
+    cardList.addEventListener('dragover', dragOver);
+    cardList.addEventListener('drop', drop);
+  });
+}
+
+function saveCards() {
+  localStorage.clear();
+  const cardElements = document.querySelectorAll('.new-push-message');
+  const objSaveCard = { todo: [], progress: [], done: [] };
+  
+  cardElements.forEach((cardEl, i) => {
+    objSaveCard[cardEl.closest('section').id].push({"index": i, "elCard": cardEl.outerHTML});
+  })
+  localStorage.setItem('trello', JSON.stringify(objSaveCard));
+}
+
+runEventsMess();
 insertCardEl();
