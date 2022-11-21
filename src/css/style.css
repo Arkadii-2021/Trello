@@ -34,16 +34,14 @@ body {
 }
 
 .anotner-card {
+  display: none;
 	color: #92a1a9;
 	font-weight: 700;
 	cursor: pointer;
 }
 
-.columns-container {
-	display: box;
-	padding: 0.4%;
-	width: 790px;
-	background: #107abb;
+.active__form {
+  display: block;
 }
 
 .push-container {
