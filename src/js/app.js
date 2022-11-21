@@ -85,7 +85,6 @@ function addTaskEl(e, ev, textPush, btnAddTask, btnClose) {
   && ev.target.previousSibling.value !== '') {
     cardEl.textContent = ev.target.previousSibling.value;
     ev.target.parentElement.firstChild.nextSibling.after(cardEl);
-    console.log(ev.target.parentElement.firstChild.nextSibling.after)
     ev.target.previousSibling.value = '';
     textPush.remove();
     btnAddTask.remove();
@@ -122,7 +121,6 @@ function drop(e) {
   const messDataAttr = e.dataTransfer.getData('dragItem');
   const messDragEl = document.querySelector(`[idMessage='${messDataAttr}']`);
   this.firstChild.nextSibling.after(messDragEl);
-  console.log(this.firstChild.nextSibling);
   saveCards();
 }
 
